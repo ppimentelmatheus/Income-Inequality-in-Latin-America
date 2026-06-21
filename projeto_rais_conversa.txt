@@ -1,0 +1,94 @@
+PROJETO RAIS – RESUMO DA CONVERSA
+
+Objetivo: Replicar para o Brasil uma figura semelhante à de Violante
+(2020), acompanhando a evolução dos percentis da distribuição salarial
+ao longo do tempo utilizando dados da RAIS.
+
+Decisões metodológicas finais: - Período: 1994–2024 - População: homens
+entre 25 e 55 anos - Setor: inicialmente apenas setor privado - Unidade
+observacional: trabalhador-ano - Salário do trabalhador: soma das
+remunerações de todos os vínculos - Medida inicial: salário nominal
+médio - Etapa posterior: salário-hora e deflacionamento
+
+Estrutura do projeto: Projeto_RAIS/ ├── raw/ ├── layouts/ ├── scripts/
+├── intermediate/ ├── final/ └── figures/
+
+Fluxo geral: 1. Baixar microdados da RAIS. 2. Identificar layout dos
+arquivos. 3. Ler arquivos TXT. 4. Filtrar amostra. 5. Agregar vínculos
+por trabalhador. 6. Construir painel trabalhador-ano. 7. Deflacionar. 8.
+Calcular percentis anuais. 9. Replicar gráfico de Violante.
+
+Acesso aos dados: Foi identificado que o FTP do Ministério do Trabalho
+está acessível.
+
+Diretório: ftp://ftp.mtps.gov.br/pdet/microdados/
+
+Estrutura encontrada: 1985/ 1986/ … 2025/ RAIS/ Layouts/
+
+Dentro de: ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/1994/
+
+Foram encontrados arquivos por UF:
+
+AC1994.7z AL1994.7z AM1994.7z … RJ1994.7z SP1994.7z
+
+Também existe: ESTB1994.7z
+
+Estratégia adotada: - Começar com apenas uma UF para validar o
+pipeline. - Baixar um arquivo .7z. - Descompactar. - Inspecionar o
+conteúdo. - Descobrir o layout. - Construir o processamento nacional.
+
+Download de exemplo:
+
+download.file(
+“ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/1994/AC1994.7z”,
+“raw/1994/AC1994.7z”, mode = “wb” )
+
+Descompactação:
+
+library(archive)
+
+archive_extract( “raw/1994/AC1994.7z”, dir = “raw/1994/AC” )
+
+Resultado obtido: O arquivo interno foi identificado como TXT.
+
+Próxima etapa crítica: Obter o layout oficial da RAIS 1994 para mapear:
+
+-   PIS
+-   Sexo
+-   Idade
+-   Natureza jurídica
+-   Remuneração média
+
+Pipeline planejado:
+
+FASE 1 Descobrir arquivos disponíveis no FTP.
+
+FASE 2 Baixar arquivos .7z por UF.
+
+FASE 3 Descompactar arquivos.
+
+FASE 4 Inspecionar TXT.
+
+FASE 5 Obter layout oficial.
+
+FASE 6 Ler microdados.
+
+FASE 7 Filtrar: - homens - 25–55 anos - setor privado
+
+FASE 8 Agregar vínculos:
+
+Salario_it = soma_j(Salario_ijt)
+
+FASE 9 Salvar painel anual.
+
+FASE 10 Empilhar UFs.
+
+FASE 11 Repetir para 1995–2024.
+
+FASE 12 Empilhar anos.
+
+FASE 13 Deflacionar salários.
+
+FASE 14 Construir percentis anuais.
+
+FASE 15 Replicar gráfico de Violante.
