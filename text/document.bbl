@@ -1,0 +1,33 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Alvarez et~al.(2018)Alvarez, Benguria, Engbom, and Moser]{alvarez2018firms}
+Jorge Alvarez, Felipe Benguria, Niklas Engbom, and Christian Moser.
+\newblock Firms and the decline in earnings inequality in brazil.
+\newblock \emph{American Economic Journal: Macroeconomics}, 10\penalty0 (1):\penalty0 149--189, 2018.
+
+\bibitem[Engbom and Moser(2022)]{engbom2022earnings}
+Niklas Engbom and Christian Moser.
+\newblock Earnings inequality and the minimum wage: Evidence from brazil.
+\newblock \emph{American Economic Review}, 112\penalty0 (12):\penalty0 3803--3847, 2022.
+
+\bibitem[Heathcote et~al.(2020)Heathcote, Perri, and Violante]{heathcote2020rise}
+Jonathan Heathcote, Fabrizio Perri, and Giovanni~L Violante.
+\newblock The rise of us earnings inequality: Does the cycle drive the trend?
+\newblock \emph{Review of economic dynamics}, 37:\penalty0 S181--S204, 2020.
+
+\bibitem[Heathcote et~al.(2023)Heathcote, Perri, Violante, and Zhang]{heathcote2023more}
+Jonathan Heathcote, Fabrizio Perri, Giovanni~L Violante, and Lichen Zhang.
+\newblock More unequal we stand? inequality dynamics in the united states, 1967--2021.
+\newblock \emph{Review of Economic Dynamics}, 50:\penalty0 235--266, 2023.
+
+\bibitem[Storesletten et~al.(2020)Storesletten, Heathcote, and Violante]{storesletten2020should}
+Kjetil Storesletten, Jonathan Heathcote, and Giovanni Violante.
+\newblock How should tax progressivity respond to rising income inequality.
+\newblock Technical report, CEPR Discussion Papers, 2020.
+
+\end{thebibliography}
