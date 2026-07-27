@@ -119,6 +119,24 @@ ano_min <- min(anos)
 ano_max <- max(anos)
 sufixo <- sprintf("%s_%s", ano_min, ano_max)
 n_anos <- data.table::uniqueN(long$ano)
+periodo <- sprintf("%s-%s", ano_min, ano_max)
+ano_cobertura_parcial <- as.integer(Sys.getenv("RAIS_PARTIAL_COVERAGE_FROM", "2018"))
+tem_cobertura_parcial <- any(anos >= ano_cobertura_parcial)
+x_cobertura_parcial <- max(ano_cobertura_parcial, ano_min)
+
+caption_log <- paste0(
+  "Average remuneration in multiples of the minimum wage; log deviations relative to ",
+  ano_base,
+  ". Declines indicate a reduction in the number of minimum wages, not necessarily a fall in real earnings.",
+  if (tem_cobertura_parcial) " Shaded area denotes partial RAIS coverage from 2018 onward." else ""
+)
+
+caption_indice <- paste0(
+  "Average remuneration in multiples of the minimum wage; index ",
+  ano_base,
+  " = 100. Declines indicate a reduction in the number of minimum wages, not necessarily a fall in real earnings.",
+  if (tem_cobertura_parcial) " Shaded area denotes partial RAIS coverage from 2018 onward." else ""
+)
 
 last_points <- long[, .SD[which.max(ano)], by = percentil]
 last_points[, label := rotulos[as.character(percentil)]]
@@ -128,8 +146,27 @@ p_log <- ggplot2::ggplot(
   ggplot2::aes(x = ano, y = desvio_log_base, color = percentil, group = percentil)
 ) +
   ggplot2::geom_hline(yintercept = 0, color = "#666666", linewidth = 0.3) +
+  {if (tem_cobertura_parcial) ggplot2::annotate(
+    "rect",
+    xmin = ano_cobertura_parcial - 0.5,
+    xmax = ano_max + 0.5,
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#D9D9D9",
+    alpha = 0.35
+  )} +
   {if (n_anos > 1) ggplot2::geom_line(ggplot2::aes(linewidth = destaque), alpha = 0.95)} +
   ggplot2::geom_point(ggplot2::aes(size = destaque), alpha = 0.95) +
+  {if (tem_cobertura_parcial) ggplot2::annotate(
+    "text",
+    x = x_cobertura_parcial,
+    y = max(long$desvio_log_base, na.rm = TRUE),
+    label = "Partial data from 2018",
+    hjust = 0,
+    vjust = 1.2,
+    color = "#666666",
+    size = 3.2
+  )} +
   ggplot2::geom_text(
     data = last_points[destaque == TRUE],
     ggplot2::aes(label = label),
@@ -143,10 +180,11 @@ p_log <- ggplot2::ggplot(
   ggplot2::scale_size_manual(values = c(`TRUE` = 2.2, `FALSE` = 1.4), guide = "none") +
   ggplot2::scale_x_continuous(breaks = anos, expand = ggplot2::expansion(mult = c(0.01, 0.08))) +
   ggplot2::labs(
-    title = "Percentis da distribuicao de renda do trabalho - Brasil, RAIS",
-    subtitle = paste0("Homens 25-55; desvios log em relacao a ", ano_base),
+    title = paste0("Percentiles of Brazilian formal labor earnings, ", periodo),
+    subtitle = paste0("Men aged 25-55; log deviations relative to ", ano_base),
     x = NULL,
-    y = paste0("Desvio log de ", ano_base)
+    y = paste0("Log deviation from ", ano_base),
+    caption = caption_log
   ) +
   theme_heathcote
 
@@ -155,8 +193,27 @@ p_indice <- ggplot2::ggplot(
   ggplot2::aes(x = ano, y = indice_base_100, color = percentil, group = percentil)
 ) +
   ggplot2::geom_hline(yintercept = 100, color = "#666666", linewidth = 0.3) +
+  {if (tem_cobertura_parcial) ggplot2::annotate(
+    "rect",
+    xmin = ano_cobertura_parcial - 0.5,
+    xmax = ano_max + 0.5,
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#D9D9D9",
+    alpha = 0.35
+  )} +
   {if (n_anos > 1) ggplot2::geom_line(ggplot2::aes(linewidth = destaque), alpha = 0.95)} +
   ggplot2::geom_point(ggplot2::aes(size = destaque), alpha = 0.95) +
+  {if (tem_cobertura_parcial) ggplot2::annotate(
+    "text",
+    x = x_cobertura_parcial,
+    y = max(long$indice_base_100, na.rm = TRUE),
+    label = "Partial data from 2018",
+    hjust = 0,
+    vjust = 1.2,
+    color = "#666666",
+    size = 3.2
+  )} +
   ggplot2::geom_text(
     data = last_points[destaque == TRUE],
     ggplot2::aes(y = indice_base_100, label = label),
@@ -170,10 +227,11 @@ p_indice <- ggplot2::ggplot(
   ggplot2::scale_size_manual(values = c(`TRUE` = 2.2, `FALSE` = 1.4), guide = "none") +
   ggplot2::scale_x_continuous(breaks = anos, expand = ggplot2::expansion(mult = c(0.01, 0.08))) +
   ggplot2::labs(
-    title = "Percentis da distribuicao de renda do trabalho - Brasil, RAIS",
-    subtitle = paste0("Homens 25-55; indice ", ano_base, " = 100"),
+    title = paste0("Percentiles of Brazilian formal labor earnings, ", periodo),
+    subtitle = paste0("Men aged 25-55; index ", ano_base, " = 100"),
     x = NULL,
-    y = paste0("Indice, ", ano_base, " = 100")
+    y = paste0("Index, ", ano_base, " = 100"),
+    caption = caption_indice
   ) +
   theme_heathcote
 
